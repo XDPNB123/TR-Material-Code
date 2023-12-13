@@ -1,0 +1,58 @@
+
+// 查看 material 表是否有重复的 resultCode
+[
+  {
+    $match: {
+      deprecated: "N"
+    }
+  },
+  {
+    $group: {
+      _id: "$resultCode",
+      data: {
+        $push: {
+          resultCode: "$resultCode",
+          bigName: "$bigName",
+          middleName: "$middleName",
+          smallName: "$smallName",
+          thinName: "$thinName",
+          xhms: "$xhms",
+          ggms: "$ggms",
+          unitName: "$unitName",
+          unitCode: "$unitCode",
+          createUser: "$createUser",
+          createTime: "$createTime"
+        }
+      },
+      count: {
+        $sum: 1
+      }
+    }
+  },
+  {
+    $match: {
+      count: {
+        $gt: 1
+      }
+    }
+  },
+  {
+    $unwind: "$data"
+  },
+  {
+    $project: {
+      _id: 0,
+      resultCode: "$data.resultCode",
+      bigName: "$data.bigName",
+      middleName: "$data.middleName",
+      smallName: "$data.smallName",
+      thinName: "$data.thinName",
+      xhms: "$data.xhms",
+      ggms: "$data.ggms",
+      unitName: "$data.unitName",
+      unitCode: "$data.unitCode",
+      createUser: "$data.createUser",
+      createTime: "$data.createTime"
+    }
+  }
+]
